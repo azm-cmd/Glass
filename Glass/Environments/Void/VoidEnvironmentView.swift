@@ -16,8 +16,12 @@ struct VoidEnvironmentView: View {
             let size = proxy.size
 
             TimelineView(.animation(minimumInterval: 1.0 / 60.0, paused: false)) { context in
-                simulation.seedIfNeeded(size: size)
-                simulation.tick(now: context.date, size: size, reduceMotion: reduceMotion)
+                // `let _ =` (rather than a bare statement) keeps these
+                // Void-returning calls from being fed into the
+                // @ViewBuilder's `buildExpression`, which only accepts View
+                // results.
+                let _ = simulation.seedIfNeeded(size: size)
+                let _ = simulation.tick(now: context.date, size: size, reduceMotion: reduceMotion)
 
                 ZStack {
                     Color.clear
