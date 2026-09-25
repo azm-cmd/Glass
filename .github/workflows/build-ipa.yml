@@ -1,0 +1,88 @@
+name: Build IPA
+
+# Builds an unsigned, device-targeted .ipa for sideloading (e.g. with
+# Sideloadly), which resigns the app locally with your own Apple ID.
+# No Apple certificate, provisioning profile, or password is stored here.
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - claude/admiring-hawking-gxsksw
+
+jobs:
+  build:
+    name: Build unsigned IPA
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    env:
+      PROJECT: Glass.xcodeproj
+      SCHEME: Glass
+      CONFIGURATION: Release
+      APP_NAME: Glass.app
+      IPA_NAME: Glass.ipa
+      ARCHIVE_PATH: build/Glass.xcarchive
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Show build environment
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
+          xcodebuild -project "$PROJECT" -list
+
+      - name: Archive (unsigned, physical-device build)
+        run: |
+          xcodebuild archive \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration "$CONFIGURATION" \
+            -destination "generic/platform=iOS" \
+            -archivePath "$ARCHIVE_PATH" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" \
+            DEVELOPMENT_TEAM="" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
+
+      - name: Verify archive was produced
+        run: |
+          APP_PATH="$ARCHIVE_PATH/Products/Applications/$APP_NAME"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "::error::Expected app bundle not found at $APP_PATH — archive step did not produce a usable build."
+            exit 1
+          fi
+          echo "Found app bundle at $APP_PATH"
+
+      - name: Package IPA
+        run: |
+          APP_PATH="$ARCHIVE_PATH/Products/Applications/$APP_NAME"
+          mkdir -p build/Payload
+          cp -R "$APP_PATH" build/Payload/
+          (cd build && zip -r -y "$IPA_NAME" Payload)
+
+      - name: Verify IPA was produced
+        run: |
+          IPA_PATH="build/$IPA_NAME"
+          if [ ! -s "$IPA_PATH" ]; then
+            echo "::error::IPA was not produced at $IPA_PATH — packaging step failed."
+            exit 1
+          fi
+          echo "IPA ready: $IPA_PATH ($(du -h "$IPA_PATH" | cut -f1))"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Glass-IPA
+          path: build/Glass.ipa
+          if-no-files-found: error
+          retention-days: 14
