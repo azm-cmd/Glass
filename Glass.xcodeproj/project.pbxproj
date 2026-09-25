@@ -14,6 +14,9 @@
 		D810A485ED03241B4D419B1B /* PlaceholderEnvironmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2CCE8038A39D5E0853964B /* PlaceholderEnvironmentView.swift */; };
 		673BD4755D05AD7853C1F76E /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50AF03B971722F244F58D669 /* BackgroundView.swift */; };
 		B97706CA828BCA0385813DBA /* ModeSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEE3772A077021721A278F6 /* ModeSelectorView.swift */; };
+		8F219E9CB0EB53F16947CCF2 /* VoidBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C123B1612DD272D1371C17 /* VoidBlob.swift */; };
+		5EC84D8DBC74254770F58904 /* VoidSimulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149D439536B3216FDAEEB975 /* VoidSimulation.swift */; };
+		DBA41ECCCC3FC1626E53A130 /* VoidEnvironmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 729FAE923D5A4FD12AABFE22 /* VoidEnvironmentView.swift */; };
 		D3C681D06BD2AA399DAC946D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FD633DBDDE131CA3766E4 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +28,9 @@
 		5D2CCE8038A39D5E0853964B /* PlaceholderEnvironmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderEnvironmentView.swift; sourceTree = "<group>"; };
 		50AF03B971722F244F58D669 /* BackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		CBEE3772A077021721A278F6 /* ModeSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectorView.swift; sourceTree = "<group>"; };
+		A4C123B1612DD272D1371C17 /* VoidBlob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoidBlob.swift; sourceTree = "<group>"; };
+		149D439536B3216FDAEEB975 /* VoidSimulation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoidSimulation.swift; sourceTree = "<group>"; };
+		729FAE923D5A4FD12AABFE22 /* VoidEnvironmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoidEnvironmentView.swift; sourceTree = "<group>"; };
 		4F7FD633DBDDE131CA3766E4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C59C0996DAEEE6F529A27976 /* Glass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Glass.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -66,8 +72,19 @@
 				73C8EB5BB682575EC87A171A /* EnvironmentMode.swift */,
 				C826A6FCE48478DCB74F2134 /* EnvironmentContainerView.swift */,
 				5D2CCE8038A39D5E0853964B /* PlaceholderEnvironmentView.swift */,
+				43B026C48BBF33FEFF9243A8 /* Void */,
 			);
 			path = Environments;
+			sourceTree = "<group>";
+		};
+		43B026C48BBF33FEFF9243A8 /* Void */ = {
+			isa = PBXGroup;
+			children = (
+				A4C123B1612DD272D1371C17 /* VoidBlob.swift */,
+				149D439536B3216FDAEEB975 /* VoidSimulation.swift */,
+				729FAE923D5A4FD12AABFE22 /* VoidEnvironmentView.swift */,
+			);
+			path = Void;
 			sourceTree = "<group>";
 		};
 		F78DF0CAC5E40C02D4E518CA /* UI */ = {
@@ -163,6 +180,9 @@
 				D810A485ED03241B4D419B1B /* PlaceholderEnvironmentView.swift in Sources */,
 				673BD4755D05AD7853C1F76E /* BackgroundView.swift in Sources */,
 				B97706CA828BCA0385813DBA /* ModeSelectorView.swift in Sources */,
+				8F219E9CB0EB53F16947CCF2 /* VoidBlob.swift in Sources */,
+				5EC84D8DBC74254770F58904 /* VoidSimulation.swift in Sources */,
+				DBA41ECCCC3FC1626E53A130 /* VoidEnvironmentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

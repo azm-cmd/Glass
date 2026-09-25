@@ -20,7 +20,7 @@ struct EnvironmentContainerView: View {
     @ViewBuilder
     private var content: some View {
         switch mode {
-        case .void: PlaceholderEnvironmentView(mode: .void)
+        case .void: VoidEnvironmentView(reduceMotion: reduceMotion)
         case .fluid: PlaceholderEnvironmentView(mode: .fluid)
         case .orbit: PlaceholderEnvironmentView(mode: .orbit)
         case .playground: PlaceholderEnvironmentView(mode: .playground)
