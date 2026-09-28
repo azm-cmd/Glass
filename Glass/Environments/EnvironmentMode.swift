@@ -42,14 +42,4 @@ enum EnvironmentMode: Int, CaseIterable, Identifiable, Hashable {
         case .light: "sparkles"
         }
     }
-
-    var accentColor: Color {
-        switch self {
-        case .void: Color(red: 0.62, green: 0.49, blue: 1.0)
-        case .fluid: Color(red: 0.35, green: 0.78, blue: 1.0)
-        case .orbit: Color(red: 0.55, green: 0.6, blue: 1.0)
-        case .playground: Color(red: 0.42, green: 0.95, blue: 0.8)
-        case .light: Color(red: 1.0, green: 0.85, blue: 0.45)
-        }
-    }
 }

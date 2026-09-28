@@ -1,41 +1,25 @@
 import SwiftUI
 
-/// Full-screen dark, deep-space backdrop with very subtle ambient light
-/// tied to the active environment's accent color.
+/// Full-screen dark backdrop. Deliberately almost featureless — a plain
+/// black field with one faint neutral glow from above — so the Liquid
+/// Glass controls and whatever objects an environment places on top are
+/// the only things doing visual work.
 struct BackgroundView: View {
-    let accent: Color
-
     var body: some View {
         ZStack {
             Color.black
 
             RadialGradient(
-                colors: [accent.opacity(0.22), .clear],
-                center: .topLeading,
-                startRadius: 0,
-                endRadius: 520
-            )
-            .blur(radius: 60)
-
-            RadialGradient(
                 colors: [Color.white.opacity(0.05), .clear],
-                center: .bottomTrailing,
+                center: .top,
                 startRadius: 0,
-                endRadius: 460
-            )
-            .blur(radius: 80)
-
-            LinearGradient(
-                colors: [Color.black.opacity(0), Color.black.opacity(0.4)],
-                startPoint: .center,
-                endPoint: .bottom
+                endRadius: 640
             )
         }
         .ignoresSafeArea()
-        .animation(.easeInOut(duration: 0.6), value: accent)
     }
 }
 
 #Preview {
-    BackgroundView(accent: EnvironmentMode.light.accentColor)
+    BackgroundView()
 }

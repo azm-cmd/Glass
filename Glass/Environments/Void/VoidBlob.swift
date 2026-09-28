@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// A single glass body in the VOID physics playground. Pure data — all
-/// motion lives in `VoidSimulation`, all rendering lives in
+/// A single translucent physical object in the VOID playground. Pure
+/// data — all motion lives in `VoidSimulation`, all rendering lives in
 /// `VoidEnvironmentView`.
 struct VoidBlob: Identifiable {
     let id: UUID
@@ -25,11 +25,12 @@ struct VoidBlob: Identifiable {
     /// 0...1 display amount, eased in while pulsing and eased back out after.
     var pulseAmount: CGFloat = 0
 
+    /// Deliberately low-saturation — these read as faint, cool internal
+    /// light rather than "colored balls." Color is a hint, not a fill.
     static let palette: [Color] = [
-        Color(red: 0.64, green: 0.50, blue: 1.00),
-        Color(red: 0.52, green: 0.66, blue: 1.00),
-        Color(red: 0.78, green: 0.58, blue: 0.98),
-        Color(red: 0.46, green: 0.62, blue: 0.98),
-        Color(red: 0.70, green: 0.52, blue: 1.00),
+        Color(hue: 0.62, saturation: 0.14, brightness: 0.97),
+        Color(hue: 0.58, saturation: 0.10, brightness: 0.95),
+        Color(hue: 0.66, saturation: 0.12, brightness: 0.96),
+        Color.white,
     ]
 }

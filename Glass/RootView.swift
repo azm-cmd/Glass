@@ -10,7 +10,7 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
-            BackgroundView(accent: selectedMode.accentColor)
+            BackgroundView()
 
             EnvironmentContainerView(mode: selectedMode, reduceMotion: reduceMotion)
 

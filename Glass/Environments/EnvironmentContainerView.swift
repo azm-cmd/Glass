@@ -30,9 +30,11 @@ struct EnvironmentContainerView: View {
 
     private var transition: AnyTransition {
         guard !reduceMotion else { return .opacity }
+        // A small, calm scale rather than a pop — the mode switch should
+        // read as a slow physical settle, not a flashy effect.
         return .asymmetric(
-            insertion: .scale(scale: 0.92).combined(with: .opacity),
-            removal: .scale(scale: 1.06).combined(with: .opacity)
+            insertion: .scale(scale: 0.97).combined(with: .opacity),
+            removal: .scale(scale: 1.02).combined(with: .opacity)
         )
     }
 }

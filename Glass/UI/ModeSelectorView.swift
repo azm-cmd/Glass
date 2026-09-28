@@ -1,34 +1,34 @@
 import SwiftUI
 import UIKit
 
-/// The floating Liquid Glass mode selector. A capsule of native glass
-/// hosts five compact icons; the selected icon carries its own tinted
-/// glass highlight that morphs between icons via `matchedGeometryEffect`.
-/// Tapping an icon or dragging horizontally across the bar both change
-/// the mode, with a light haptic tick on every change.
+/// The floating Liquid Glass mode selector: one native glass capsule
+/// housing five SF Symbol icons. Selection is shown by a plain (colorless)
+/// glass highlight that slides between icons, plus a brightness/weight
+/// change on the icon itself — never a tinted "badge." All color comes
+/// from the environment behind the glass, not from this control.
 struct ModeSelectorView: View {
     @Binding var selectedMode: EnvironmentMode
     let reduceMotion: Bool
 
     @Namespace private var glassNamespace
     @State private var dragStartIndex: Int?
+    @State private var feedback = UIImpactFeedbackGenerator(style: .light)
 
     private let modes = EnvironmentMode.allCases
-    private let iconDiameter: CGFloat = 50
-    private let iconSpacing: CGFloat = 4
-    @State private var feedback = UIImpactFeedbackGenerator(style: .light)
+    private let iconDiameter: CGFloat = 44
+    private let iconSpacing: CGFloat = 6
 
     private var stepWidth: CGFloat { iconDiameter + iconSpacing }
 
     var body: some View {
-        GlassEffectContainer(spacing: 20) {
+        GlassEffectContainer(spacing: 18) {
             HStack(spacing: iconSpacing) {
                 ForEach(modes) { mode in
                     iconButton(for: mode)
                 }
             }
-            .padding(8)
-            .glassEffect(.regular, in: .capsule)
+            .padding(9)
+            .glassEffect(.regular.interactive(), in: .capsule)
         }
         .simultaneousGesture(dragGesture)
         .onAppear { feedback.prepare() }
@@ -41,18 +41,14 @@ struct ModeSelectorView: View {
             select(mode)
         } label: {
             Image(systemName: mode.symbolName)
-                .font(.system(size: 18, weight: .medium))
-                .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(isSelected ? .white : .white.opacity(0.5))
+                .font(.system(size: 17, weight: isSelected ? .semibold : .regular))
+                .foregroundStyle(isSelected ? .white : .white.opacity(0.45))
                 .frame(width: iconDiameter, height: iconDiameter)
                 .background {
                     if isSelected {
                         Circle()
-                            .glassEffect(
-                                .regular.tint(mode.accentColor.opacity(0.55)).interactive(),
-                                in: .circle
-                            )
-                            .matchedGeometryEffect(id: "selectionHighlight", in: glassNamespace)
+                            .glassEffect(.regular.interactive(), in: .circle)
+                            .matchedGeometryEffect(id: "selection", in: glassNamespace)
                     }
                 }
                 .contentShape(Circle())
@@ -85,7 +81,7 @@ struct ModeSelectorView: View {
 
         let animation: Animation = reduceMotion
             ? .easeInOut(duration: 0.2)
-            : .spring(response: 0.45, dampingFraction: 0.72)
+            : .spring(response: 0.5, dampingFraction: 0.8)
 
         withAnimation(animation) {
             selectedMode = mode
