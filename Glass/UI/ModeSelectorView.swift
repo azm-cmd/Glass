@@ -2,12 +2,22 @@ import SwiftUI
 import UIKit
 
 /// The floating Liquid Glass mode selector: one native glass capsule
-/// housing five SF Symbol icons. Selection is shown by a plain (colorless)
-/// glass highlight that *morphs* between icons via `glassEffectID` — the
-/// same identity-based mechanism Apple's own tab bars use, so the system
-/// (not this code) renders the liquid stretch/merge as it moves. Plus a
-/// brightness/weight change on the icon itself — never a tinted "badge."
-/// All color comes from the environment behind the glass, not this control.
+/// housing five SF Symbol icons, plus one *persistent* glass circle that
+/// slides between icon positions via an animated offset.
+///
+/// Earlier this used a `Circle` nested inside each icon button's own
+/// conditional `.background`, tagged with a shared `glassEffectID`, on
+/// the theory that Apple's system would recognize the pair as one shape
+/// relocating across a view-hierarchy transition. On an actual device
+/// that produced two independent shapes cross-fading in place — a
+/// double-circle "ghost," not a morph. The structural difference from
+/// Apple's own documented example (where the two `glassEffectID`-tagged
+/// views are direct siblings in one `HStack`, not nested separately
+/// inside two different parent buttons) is the likely cause. This
+/// version keeps exactly one glass circle alive at all times, as a
+/// sibling of the icon row rather than owned by any one icon, and
+/// animates its position — no insert/remove, so there's nothing to
+/// mismatch.
 struct ModeSelectorView: View {
     @Binding var selectedMode: EnvironmentMode
     let reduceMotion: Bool
@@ -22,18 +32,24 @@ struct ModeSelectorView: View {
 
     private var stepWidth: CGFloat { iconDiameter + iconSpacing }
 
+    private var selectedIndex: Int {
+        modes.firstIndex(of: selectedMode) ?? 0
+    }
+
     var body: some View {
-        // Apple's docs: the container's `spacing` is the distance threshold
-        // under which an added/removed glass shape gets the fluid
-        // matchedGeometry-style morph; farther than that, it falls back to
-        // a plain materialize. Adjacent icon centers are `stepWidth` (~50pt)
-        // apart, so spacing has to clear that for the selection highlight
-        // to actually morph between neighboring icons instead of just
-        // fading in and out in place.
-        GlassEffectContainer(spacing: max(stepWidth + 10, 60)) {
-            HStack(spacing: iconSpacing) {
-                ForEach(modes) { mode in
-                    iconButton(for: mode)
+        GlassEffectContainer(spacing: 20) {
+            ZStack(alignment: .leading) {
+                Circle()
+                    .glassEffect(.regular.interactive(), in: .circle)
+                    .glassEffectID("selection", in: glassNamespace)
+                    .frame(width: iconDiameter, height: iconDiameter)
+                    .offset(x: CGFloat(selectedIndex) * stepWidth)
+                    .allowsHitTesting(false)
+
+                HStack(spacing: iconSpacing) {
+                    ForEach(modes) { mode in
+                        iconButton(for: mode)
+                    }
                 }
             }
             .padding(9)
@@ -53,13 +69,6 @@ struct ModeSelectorView: View {
                 .font(.system(size: 17, weight: isSelected ? .semibold : .regular))
                 .foregroundStyle(isSelected ? .white : .white.opacity(0.45))
                 .frame(width: iconDiameter, height: iconDiameter)
-                .background {
-                    if isSelected {
-                        Circle()
-                            .glassEffect(.regular.interactive(), in: .circle)
-                            .glassEffectID("selection", in: glassNamespace)
-                    }
-                }
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
