@@ -3,9 +3,11 @@ import UIKit
 
 /// The floating Liquid Glass mode selector: one native glass capsule
 /// housing five SF Symbol icons. Selection is shown by a plain (colorless)
-/// glass highlight that slides between icons, plus a brightness/weight
-/// change on the icon itself — never a tinted "badge." All color comes
-/// from the environment behind the glass, not from this control.
+/// glass highlight that *morphs* between icons via `glassEffectID` — the
+/// same identity-based mechanism Apple's own tab bars use, so the system
+/// (not this code) renders the liquid stretch/merge as it moves. Plus a
+/// brightness/weight change on the icon itself — never a tinted "badge."
+/// All color comes from the environment behind the glass, not this control.
 struct ModeSelectorView: View {
     @Binding var selectedMode: EnvironmentMode
     let reduceMotion: Bool
@@ -48,7 +50,7 @@ struct ModeSelectorView: View {
                     if isSelected {
                         Circle()
                             .glassEffect(.regular.interactive(), in: .circle)
-                            .matchedGeometryEffect(id: "selection", in: glassNamespace)
+                            .glassEffectID("selection", in: glassNamespace)
                     }
                 }
                 .contentShape(Circle())
