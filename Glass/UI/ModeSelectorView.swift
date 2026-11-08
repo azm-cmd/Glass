@@ -40,7 +40,7 @@ struct ModeSelectorView: View {
         GlassEffectContainer(spacing: 20) {
             ZStack(alignment: .leading) {
                 Circle()
-                    .glassEffect(.regular.interactive(), in: .circle)
+                    .glassEffect(.clear.interactive(), in: .circle)
                     .glassEffectID("selection", in: glassNamespace)
                     .frame(width: iconDiameter, height: iconDiameter)
                     .offset(x: CGFloat(selectedIndex) * stepWidth)
@@ -53,7 +53,7 @@ struct ModeSelectorView: View {
                 }
             }
             .padding(9)
-            .glassEffect(.regular.interactive(), in: .capsule)
+            .glassEffect(.clear.interactive(), in: .capsule)
         }
         .simultaneousGesture(dragGesture)
         .onAppear { feedback.prepare() }
@@ -99,7 +99,7 @@ struct ModeSelectorView: View {
 
         let animation: Animation = reduceMotion
             ? .easeInOut(duration: 0.2)
-            : .spring(response: 0.5, dampingFraction: 0.8)
+            : .spring(response: 0.6, dampingFraction: 0.72)
 
         withAnimation(animation) {
             selectedMode = mode

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// VOID — a few translucent physical objects floating in a dark void,
+/// VOID — a few native Liquid Glass objects floating in a dark void,
 /// driven by touch and a light continuous physics simulation. Composes
 /// on top of the shared shell's black backdrop (`BackgroundView`), so
 /// this view stays transparent rather than painting its own background.
@@ -28,18 +28,20 @@ struct VoidEnvironmentView: View {
                         .contentShape(Rectangle())
                         .gesture(spawnGesture)
 
-                    ForEach(simulation.blobs) { blob in
-                        VoidBlobView(blob: blob)
-                            .position(blob.position)
-                            .simultaneousGesture(dragGesture(for: blob))
-                            .onLongPressGesture(
-                                minimumDuration: 0.35,
-                                maximumDistance: 14,
-                                perform: {},
-                                onPressingChanged: { pressing in
-                                    simulation.setPulsing(id: blob.id, active: pressing)
-                                }
-                            )
+                    GlassEffectContainer(spacing: 40) {
+                        ForEach(simulation.blobs) { blob in
+                            VoidBlobView(blob: blob)
+                                .position(blob.position)
+                                .simultaneousGesture(dragGesture(for: blob))
+                                .onLongPressGesture(
+                                    minimumDuration: 0.35,
+                                    maximumDistance: 14,
+                                    perform: {},
+                                    onPressingChanged: { pressing in
+                                        simulation.setPulsing(id: blob.id, active: pressing)
+                                    }
+                                )
+                        }
                     }
                 }
                 .coordinateSpace(name: space)
@@ -78,12 +80,14 @@ struct VoidEnvironmentView: View {
     }
 }
 
-/// Renders a single blob as a physical translucent object — native SwiftUI
-/// `Material` for the body (so it genuinely shows whatever is behind it,
-/// including other blobs), a faint internal tint, and a soft specular
-/// highlight for roundness. Deliberately not `.glassEffect` — that API is
-/// for the app's actual UI controls (the mode selector), not for objects
-/// living inside a scene.
+/// Renders a single blob as real Liquid Glass — the same API and the
+/// same `.clear` variant as the mode selector, so the whole app speaks
+/// one material language. `GlassEffectContainer` (above) lets nearby
+/// blobs visually merge into one glass form as they touch and split
+/// apart again as they separate, the same way the selector's own glass
+/// shapes blend. No custom blur, gradient, or highlight layered on top
+/// — Apple's renderer supplies the translucency, specular light, and
+/// refraction.
 private struct VoidBlobView: View {
     let blob: VoidBlob
 
@@ -93,38 +97,12 @@ private struct VoidBlobView: View {
 
     var body: some View {
         Circle()
-            .fill(.ultraThinMaterial)
-            .overlay {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [blob.color.opacity(blob.isDragged ? 0.28 : 0.16), .clear],
-                            center: .center,
-                            startRadius: 0,
-                            endRadius: blob.radius
-                        )
-                    )
-                    .allowsHitTesting(false)
-            }
-            .overlay {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [Color.white.opacity(0.3), Color.white.opacity(0)],
-                            center: UnitPoint(x: 0.32, y: 0.26),
-                            startRadius: 0,
-                            endRadius: blob.radius * 0.85
-                        )
-                    )
-                    .blendMode(.plusLighter)
-                    .allowsHitTesting(false)
-            }
-            .overlay {
-                Circle()
-                    .strokeBorder(Color.white.opacity(0.10), lineWidth: 0.75)
-                    .allowsHitTesting(false)
-            }
+            .fill(.clear)
             .frame(width: blob.radius * 2, height: blob.radius * 2)
+            .glassEffect(
+                .clear.tint(blob.color.opacity(blob.isDragged ? 0.22 : 0.12)).interactive(),
+                in: .circle
+            )
             .scaleEffect(displayScale)
             .contentShape(Circle())
             .animation(.easeOut(duration: 0.25), value: blob.isDragged)
