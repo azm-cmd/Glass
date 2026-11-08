@@ -23,7 +23,14 @@ struct ModeSelectorView: View {
     private var stepWidth: CGFloat { iconDiameter + iconSpacing }
 
     var body: some View {
-        GlassEffectContainer(spacing: 18) {
+        // Apple's docs: the container's `spacing` is the distance threshold
+        // under which an added/removed glass shape gets the fluid
+        // matchedGeometry-style morph; farther than that, it falls back to
+        // a plain materialize. Adjacent icon centers are `stepWidth` (~50pt)
+        // apart, so spacing has to clear that for the selection highlight
+        // to actually morph between neighboring icons instead of just
+        // fading in and out in place.
+        GlassEffectContainer(spacing: max(stepWidth + 10, 60)) {
             HStack(spacing: iconSpacing) {
                 ForEach(modes) { mode in
                     iconButton(for: mode)
